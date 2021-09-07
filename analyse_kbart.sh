@@ -67,7 +67,7 @@ echo "Filtrage du champ coverage_depth"
 echo "  Filtres appliqués: fulltext, ebook et video"
 
 	# peut-on créer requête awk d'inclusion or en loopant sur un array plutôt que de hardcoder la requête?
-	awk -v requete="$req" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ /ebook/ || $14 ~ /fulltext/|| $14 ~ /video/) print $0}' $output > $buffer
+	awk -v requete="$req" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ /fulltext/ || $14 ~ /ebook/ || $14 ~ /video/) print $0}' $output > $buffer
 	n_output=$(wc -l < $output)
 	n_buffer=$(wc -l < $buffer)
 	echo -e "    items exclus: $((n_output-n_buffer))"
