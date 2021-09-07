@@ -18,12 +18,19 @@ separateur=$(printf -- '-%.0s' {1..60})
 ############ Listes des inclusions et exclusions
 
 declare -a collections_a_exclure
+declare -a coverage_depth_a_inclure
 
 dos2unix -q $fichier_collections_a_exclure
+dos2unix -q $fichier_coverage_depth_a_inclure
 
 for i in $(cat $fichier_collections_a_exclure | sed '/^[[:space:]]*$/d')
 	do 
 		collections_a_exclure+=("$i")
+	done
+
+for i in $(cat $fichier_coverage_depth_a_inclure | sed '/^[[:space:]]*$/d')
+	do 
+		coverage_depth_a_inclure+=("$i")
 	done
 
 cat $kbart | sed '/^[[:space:]]*$/d' > $fichier_output
@@ -39,7 +46,7 @@ echo $separateur
 echo -e "Items dans le fichier: $((lignes_kbart-1))"
 
 echo $separateur
-echo -e "Application des exclusions (case insensitive) :"
+echo -e "Filtrage des collections (case insensitive) :"
 
 for j in ${collections_a_exclure[@]}
 	do 
@@ -64,14 +71,21 @@ echo -e "\nItems après exclusions: $((lignes_kbart_f-1))"
 
 echo $separateur
 echo "Filtrage du champ coverage_depth"
-echo "  Filtres appliqués: fulltext, ebook et video"
+n_buffer=0
+> $buffer
 
-	# peut-on créer requête awk d'inclusion or en loopant sur un array plutôt que de hardcoder la requête?
-	awk -v requete="$req" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ /coverage_depth/ || $14 ~ /fulltext/) print $0}' $fichier_output > $buffer
-	n_output=$(wc -l < $fichier_output)
-	n_buffer=$(wc -l < $buffer)
-	echo -e "    items exclus: $((n_output-n_buffer))"
-	cat $buffer > $fichier_output
+head -1 $fichier_output >> $buffer
+
+for k in ${coverage_depth_a_inclure[@]}
+	do 
+		echo -e "  $k"
+		awk -v coverage_depth="$k" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ coverage_depth) print $0}' $fichier_output >> $buffer
+		n_output=$(wc -l < $buffer)
+		echo -e "    items inclus: $((n_output-n_buffer))"
+		n_buffer=$(wc -l < $buffer)
+	done
+	
+cat $buffer > $fichier_output
 
 
 cat $fichier_output > './output.avec.doublons.csv'
