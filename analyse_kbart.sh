@@ -7,7 +7,7 @@ touch "./buffer"
 
 kbart=$1
 liste_exclusions="./exclusions"
-output="./output.csv"
+output="./output.sans_doublons.csv"
 buffer="./buffer"
 
 separateur=$(printf -- '-%.0s' {1..60})
@@ -50,7 +50,6 @@ for j in ${exclusions[@]}
 		cat $buffer > $output
 	done
 
-cat $output > './output.apres.exclusions.csv'
 
 # Formattage possible
 #LC_NUMERIC=en_US printf "%'.f\n" $var
@@ -67,12 +66,14 @@ echo "Filtrage du champ coverage_depth"
 echo "  Filtres appliqués: fulltext, ebook et video"
 
 	# peut-on créer requête awk d'inclusion or en loopant sur un array plutôt que de hardcoder la requête?
-	awk -v requete="$req" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ /fulltext/ || $14 ~ /ebook/ || $14 ~ /video/) print $0}' $output > $buffer
+	awk -v requete="$req" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ /coverage_depth/ || $14 ~ /fulltext/ || $14 ~ /ebook/ || $14 ~ /video/) print $0}' $output > $buffer
 	n_output=$(wc -l < $output)
 	n_buffer=$(wc -l < $buffer)
 	echo -e "    items exclus: $((n_output-n_buffer))"
 	cat $buffer > $output
 
+
+cat $output > './output.avec.doublons.csv'
 
 
 ############ Statistiques
