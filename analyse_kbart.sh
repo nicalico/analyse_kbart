@@ -35,7 +35,7 @@ lignes_kbart=$(wc -l < $output)
 
 echo -e "\n\n"
 echo $separateur
-echo -e "Items dans le fichier: $lignes_kbart"
+echo -e "Items dans le fichier: $((lignes_kbart-1))"
 
 echo $separateur
 echo -e "Application des exclusions (case insensitive) :"
@@ -56,7 +56,7 @@ cat $output > './output.apres.exclusions.csv'
 #LC_NUMERIC=en_US printf "%'.f\n" $var
 
 lignes_kbart_f=$(wc -l < $output)
-echo -e "\nItems après exclusions: $lignes_kbart_f"
+echo -e "\nItems après exclusions: $((lignes_kbart_f-1))"
 
 
 
@@ -94,7 +94,7 @@ dedoublonnage()
 		awk -v champ=$1 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if (length($champ) == 0 || !visited[$champ]++) print $0}' $output > $buffer
 		cat $buffer > $output
 		lignes_kbart_f=$(wc -l < $output)
-		echo -e "  Items après dédoublonnage: $lignes_kbart_f"
+		echo -e "  Items après dédoublonnage: $((lignes_kbart_f-1))"
 	}
 
 echo -e "\nSur OCLC Number :"

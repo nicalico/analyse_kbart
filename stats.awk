@@ -28,7 +28,7 @@ print "  Video: " video;
 print "  Abstracts: " abstracts;
 print "  Audio: " audio;
 print "  Selected articles: " selectedarticles;
-print "  Autre: " autres;
-print "  Total: " ebook + fulltext + video + abstracts + audio + selectearticles + autres 
+print "  Autre: " autres-1;
+print "  Total: " ebook + fulltext + video + abstracts + audio + selectearticles + autres - 1
 }
 
