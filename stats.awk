@@ -22,13 +22,13 @@ else if ($14 ~ /selected/) then selectedarticles++
 else autres++}
 
 END {
-print "  Ebooks: " ebook;
-print "  Fulltext: " fulltext;
-print "  Video: " video;
-print "  Abstracts: " abstracts;
-print "  Audio: " audio;
-print "  Selected articles: " selectedarticles;
-print "  Autre: " autres-1;
-print "  Total: " ebook + fulltext + video + abstracts + audio + selectearticles + autres - 1
+print "    Ebooks: " ebook;
+print "    Fulltext: " fulltext;
+print "    Video: " video;
+print "    Abstracts: " abstracts;
+print "    Audio: " audio;
+print "    Selected articles: " selectedarticles;
+print "    Autre: " autres-1;
+print "\nTotal: " ebook + fulltext + video + abstracts + audio + selectedarticles + autres - 1
 }
 
