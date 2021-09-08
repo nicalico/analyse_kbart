@@ -8,8 +8,9 @@
 - Le script doit être utilisé avec sudo, ou par un usager aillant les droits en écriture sur le répertoire. Dans le cas de Cygwin, on s'assurera de démarrer le logiciel avec droits admin.
 
 ### Paramètrage
-- Les mots-clés des collections à exclure peuvent être ajoutés dans le fichier `exclusion`, à raison d'une expression par ligne. Une expression peut contenir des espaces.
-- Pour l'instant, les mots-clés pour filtrer le champ `coverage_depth` sont inscrits directement dans le code du ficher `analyse_kbart.sh`.
+- Les collections à exclure peuvent être spécifiées dans le fichier `collections_a_exclure`, à raison d'une expression par ligne. 
+- Le champ `coverage_depth` peut être filtré grâce au fichier `coverage_depth_a_inclure`, à raison d'une expression par ligne
+- Une expression peut contenir des espaces, mais on évitera de laisser des espaces avant ou après l'expression.
 
 ### Exécution
 On invoque le script avec le nom du fichier kbart:
