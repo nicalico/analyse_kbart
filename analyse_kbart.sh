@@ -46,9 +46,9 @@ echo -e "Items dans le fichier: $((lignes_kbart-1))"
 ############ Statistiques
 
 # Mettre ceci où on veut
-echo $separateur
-echo "Répartitions du champ coverage_depth"
-awk -f stats.awk $fichier_output
+#echo $separateur
+#echo "Répartitions du champ coverage_depth"
+#awk -f stats.awk $fichier_output
 
 
 ############ Collections à exclure
@@ -56,12 +56,16 @@ awk -f stats.awk $fichier_output
 echo $separateur
 echo -e "Filtrage des collections (case insensitive) :"
 
+declare -i items_exclus
+items_exclus=0
+
 for j in ${collections_a_exclure[@]}
 	do 
-		awk -v collection_a_exclure="$j" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($21 !~ collection_a_exclure) print $0}' $fichier_output > $buffer
+		awk -v collection_a_exclure="$j" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($21 !~ collection_a_exclure && $22 !~ collection_a_exclure) print $0}' $fichier_output > $buffer
 		n_output=$(wc -l < $fichier_output)
 		n_buffer=$(wc -l < $buffer)
-		echo -e "    $j: $((n_output-n_buffer)) item exclus"
+		echo -e "    $j: $((n_output-n_buffer)) items exclus"
+		items_exclus+=$((n_output-n_buffer)) 
 		cat $buffer > $fichier_output
 	done
 
@@ -70,6 +74,7 @@ for j in ${collections_a_exclure[@]}
 #LC_NUMERIC=en_US printf "%'.f\n" $var
 
 lignes_kbart_f=$(wc -l < $fichier_output)
+echo -e "\nItems exclus: $items_exclus"
 echo -e "\nItems après exclusions: $((lignes_kbart_f-1))"
 
 
@@ -120,6 +125,14 @@ echo -e "\nSur ISBN/ISSN imprimé :"
 	
 echo -e "\nSur ISBN/ISSN numérique :"
 	dedoublonnage '3'
+
+############ Statistiques
+
+# Mettre ceci où on veut
+echo $separateur
+echo "Répartitions du champ coverage_depth"
+awk -f stats.awk $fichier_output
+
 
 rm "./buffer"
 
