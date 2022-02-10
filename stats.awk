@@ -32,6 +32,6 @@ print "    Audio: " audio;
 print "    Selected articles: " selectedarticles;
 print "    Images: " image;
 print "    Autre: " autres-1;
-print "\nTotal: " ebook + fulltext + video + abstracts + audio + selectedarticles + image + autres - 1
+print "\nNombre total d'items dans le fichier KBART: " ebook + fulltext + video + abstracts + audio + selectedarticles + image + autres - 1
 }
 

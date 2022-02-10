@@ -40,21 +40,13 @@ lignes_kbart=$(wc -l < $fichier_output)
 
 echo -e "\n\n"
 echo $separateur
-echo -e "Items dans le fichier: $((lignes_kbart-1))"
-
-
-############ Statistiques
-
-# Mettre ceci où on veut
-#echo $separateur
-#echo "Répartitions du champ coverage_depth"
-#awk -f stats.awk $fichier_output
+echo -e "Items dans le fichier KBART: $((lignes_kbart-1))"
 
 
 ############ Collections à exclure
 
 echo $separateur
-echo -e "Filtrage des collections (case insensitive) :"
+echo -e "Filtrage des collections pérennes et en accès libre:"
 
 declare -i items_exclus
 items_exclus=0
@@ -74,8 +66,8 @@ for j in ${collections_a_exclure[@]}
 #LC_NUMERIC=en_US printf "%'.f\n" $var
 
 lignes_kbart_f=$(wc -l < $fichier_output)
-echo -e "\nItems exclus: $items_exclus"
-echo -e "\nItems après exclusions: $((lignes_kbart_f-1))"
+echo -e "\nItems retirés du fichier KBART: $items_exclus"
+echo -e "\nItems conservés dans le fichier KBART: $((lignes_kbart_f-1))"
 
 
 ############ Coverage depth à inclure
@@ -96,7 +88,8 @@ for k in ${coverage_depth_a_inclure[@]}
 		n_buffer=$(wc -l < $buffer)
 	done
 
-echo -e "\nItems après inclusions: $(($(wc -l < $buffer)-1))"
+
+echo -e "\nItems conservés dans le fichier KBART: $(($(wc -l < $buffer)-1))"
 	
 cat $buffer > $fichier_output
 
@@ -128,9 +121,8 @@ echo -e "\nSur ISBN/ISSN numérique :"
 
 ############ Statistiques
 
-# Mettre ceci où on veut
 echo $separateur
-echo "Répartitions du champ coverage_depth"
+echo "Répartition des valeurs dans le champ coverage_depth après traitement"
 awk -f stats.awk $fichier_output
 
 
