@@ -1,5 +1,11 @@
 #/bin/sh
 
+if [ $# -eq 0 ]
+	then 
+		echo "Veuillez préciser le chemin du fichier à analyser. Ex. sh analyse_kbart.sh input/kbart_2021_06_08.txt"
+		exit 1
+fi
+
 OIFS="$IFS"
 IFS=$'\n'
 
