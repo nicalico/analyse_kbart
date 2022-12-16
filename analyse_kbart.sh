@@ -1,15 +1,16 @@
 #/bin/sh
 
+
 OIFS="$IFS"
 IFS=$'\n'
 
-touch "./buffer"
+touch "./output/.buffer"
 
 kbart=$1
 fichier_collections_a_exclure="./collections_a_exclure"
 fichier_coverage_depth_a_inclure="./coverage_depth_a_inclure"
-fichier_output="./output.sans.doublons.csv"
-buffer="./buffer"
+fichier_output="./output/output.sans.doublons.csv"
+buffer="./output/.buffer"
 
 separateur=$(printf -- '-%.0s' {1..60})
 
@@ -94,7 +95,7 @@ echo -e "\nItems conservés dans le fichier KBART: $(($(wc -l < $buffer)-1))"
 cat $buffer > $fichier_output
 
 
-cat $fichier_output > './output.avec.doublons.csv'
+cat $fichier_output > ./output/output.avec.doublons.csv
 
 
 ############ Dédoublonnage
@@ -126,6 +127,6 @@ echo "Répartition des valeurs dans le champ coverage_depth après traitement"
 awk -f stats.awk $fichier_output
 
 
-rm "./buffer"
+rm "./output/.buffer"
 
 IFS="$OIFS"	

@@ -1,3 +1,5 @@
-output*
+output/**
+input/**
 lister_les_colonnes.sh
-kbart*
+README.local
+.buffer
