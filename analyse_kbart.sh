@@ -8,6 +8,7 @@ fi
 
 OIFS="$IFS"
 IFS=$'\n'
+LC_NUMERIC=en_CA
 
 touch "./output/.buffer"
 
@@ -43,7 +44,7 @@ lignes_kbart=$(wc -l < $fichier_output)
 
 echo -e "\n\n"
 echo $separateur
-echo -e "Items dans le fichier KBART: $((lignes_kbart-1))"
+printf "Items dans le fichier KBART: %'d \n" $((lignes_kbart-1))
 
 ############ Collections à exclure
 
@@ -58,7 +59,7 @@ for j in ${collections_a_exclure[@]}
 		awk -v collection_a_exclure="$j" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($21 !~ collection_a_exclure && $22 !~ collection_a_exclure) print $0}' $fichier_output > $buffer
 		n_output=$(wc -l < $fichier_output)
 		n_buffer=$(wc -l < $buffer)
-		echo -e "    $j: $((n_output-n_buffer)) items exclus"
+		printf "\t$j exclus: %'d \n" $((n_output-n_buffer))
 		items_exclus+=$((n_output-n_buffer)) 
 		cat $buffer > $fichier_output
 	done
@@ -67,8 +68,8 @@ for j in ${collections_a_exclure[@]}
 #LC_NUMERIC=en_US printf "%'.f\n" $var
 
 lignes_kbart_f=$(wc -l < $fichier_output)
-echo -e "\nItems retirés du fichier KBART: $items_exclus"
-echo -e "\nItems conservés dans le fichier KBART: $((lignes_kbart_f-1))"
+printf "Items retirés du fichier KBART: %'d" $items_exclus
+printf "\nItems conservés dans le fichier KBART: %'d \n" $((lignes_kbart_f-1))
 
 ############ Coverage depth à inclure
 
@@ -83,11 +84,11 @@ for k in ${coverage_depth_a_inclure[@]}
 	do 
 		awk -v coverage_depth="$k" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ coverage_depth) print $0}' $fichier_output >> $buffer
 		n_output=$(wc -l < $buffer)
-		echo -e "    $k: $((n_output-n_buffer)) items inclus"
+		printf "\t$k inclus: %'d \n" $((n_output-n_buffer))
 		n_buffer=$(wc -l < $buffer)
 	done
 
-echo -e "\nItems conservés dans le fichier KBART: $(($(wc -l < $buffer)-1))"
+printf "\nItems conservés dans le fichier KBART: %'d \n" $(($(wc -l < $buffer)-1))
 	
 cat $buffer > $fichier_output
 
@@ -104,7 +105,7 @@ dedoublonnage()
 		awk -v champ=$1 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if (length($champ) == 0 || !visited[$champ]++) print $0}' $fichier_output > $buffer
 		cat $buffer > $fichier_output
 		lignes_kbart_f=$(wc -l < $fichier_output)
-		echo -e "  Items après dédoublonnage: $((lignes_kbart_f-1))"
+		printf "\tItems après dédoublonnage: %'d \n" $((lignes_kbart_f-1))
 	}
 
 echo -e "\nSur OCLC Number :"

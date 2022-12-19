@@ -25,7 +25,7 @@ else autres++}
 
 END {
 print "    Ebooks: " ebook;
-print "    Fulltext: " fulltext;
+print "    Full text: " fulltext
 print "    Video: " video;
 print "    Abstracts: " abstracts;
 print "    Audio: " audio;
