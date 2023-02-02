@@ -77,6 +77,16 @@ coverage_a_inclure()
 	cat $fichier_output > ./output/output.avec.doublons.csv
 	}
 
+dedoublonnage()
+	{
+		awk -v champ=$1 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if (length($champ) == 0 || !visited[$champ]++) print $0}' $fichier_output > $buffer
+		cat $buffer > $fichier_output
+		lignes_kbart_f=$(wc -l < $fichier_output)
+		printf "\tItems après dédoublonnage: %'d \n" $((lignes_kbart_f-1))
+	}
+
+
+
 if [ $# -eq 0 ]
 	then 
 		echo "Veuillez préciser le chemin du fichier à analyser. Ex. sh analyse_kbart.sh input/kbart_2021_06_08.txt"
@@ -103,18 +113,8 @@ collections_a_exclure
 
 coverage_a_inclure
 
-############ Dédoublonnage
-
 echo $separateur
 echo -e "Dédoublonnages"
-
-dedoublonnage()
-	{
-		awk -v champ=$1 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if (length($champ) == 0 || !visited[$champ]++) print $0}' $fichier_output > $buffer
-		cat $buffer > $fichier_output
-		lignes_kbart_f=$(wc -l < $fichier_output)
-		printf "\tItems après dédoublonnage: %'d \n" $((lignes_kbart_f-1))
-	}
 
 echo -e "\nSur OCLC Number :"
 	dedoublonnage '25'
