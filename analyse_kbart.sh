@@ -27,6 +27,32 @@ liste_inclusions_et_exclusions()
 	printf "Items dans le fichier KBART: %'d \n" $((lignes_kbart-1))
 	}
 
+collections_a_exclure() 
+	{
+	echo $separateur
+	echo -e "Filtrage des collections pérennes et en accès libre:"
+
+	declare -i items_exclus
+	items_exclus=0
+
+	for j in ${collections_a_exclure[@]}
+		do 
+			awk -v collection_a_exclure="$j" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($21 !~ collection_a_exclure && $22 !~ collection_a_exclure) print $0}' $fichier_output > $buffer
+			n_output=$(wc -l < $fichier_output)
+			n_buffer=$(wc -l < $buffer)
+			printf "\t$j exclus: %'d \n" $((n_output-n_buffer))
+			items_exclus+=$((n_output-n_buffer)) 
+			cat $buffer > $fichier_output
+		done
+
+	# Formattage possible
+	#LC_NUMERIC=en_US printf "%'.f\n" $var
+
+	lignes_kbart_f=$(wc -l < $fichier_output)
+	printf "Items retirés du fichier KBART: %'d" $items_exclus
+	printf "\nItems conservés dans le fichier KBART: %'d \n" $((lignes_kbart_f-1))
+	}
+
 if [ $# -eq 0 ]
 	then 
 		echo "Veuillez préciser le chemin du fichier à analyser. Ex. sh analyse_kbart.sh input/kbart_2021_06_08.txt"
@@ -49,30 +75,7 @@ separateur=$(printf -- '-%.0s' {1..60})
 
 liste_inclusions_et_exclusions
 
-############ Collections à exclure
-
-echo $separateur
-echo -e "Filtrage des collections pérennes et en accès libre:"
-
-declare -i items_exclus
-items_exclus=0
-
-for j in ${collections_a_exclure[@]}
-	do 
-		awk -v collection_a_exclure="$j" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($21 !~ collection_a_exclure && $22 !~ collection_a_exclure) print $0}' $fichier_output > $buffer
-		n_output=$(wc -l < $fichier_output)
-		n_buffer=$(wc -l < $buffer)
-		printf "\t$j exclus: %'d \n" $((n_output-n_buffer))
-		items_exclus+=$((n_output-n_buffer)) 
-		cat $buffer > $fichier_output
-	done
-
-# Formattage possible
-#LC_NUMERIC=en_US printf "%'.f\n" $var
-
-lignes_kbart_f=$(wc -l < $fichier_output)
-printf "Items retirés du fichier KBART: %'d" $items_exclus
-printf "\nItems conservés dans le fichier KBART: %'d \n" $((lignes_kbart_f-1))
+collections_a_exclure
 
 ############ Coverage depth à inclure
 
