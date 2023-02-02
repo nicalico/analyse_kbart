@@ -1,5 +1,32 @@
 #/bin/sh
 
+liste_inclusions_et_exclusions()
+	{
+	collections_a_exclure=()
+	coverage_depth_a_inclure=()
+
+	dos2unix -q $fichier_collections_a_exclure
+	dos2unix -q $fichier_coverage_depth_a_inclure
+
+	for i in $(cat $fichier_collections_a_exclure | sed '/^[[:space:]]*$/d')
+		do 
+			collections_a_exclure+=("$i")
+		done
+
+	for i in $(cat $fichier_coverage_depth_a_inclure | sed '/^[[:space:]]*$/d')
+		do 
+			coverage_depth_a_inclure+=("$i")
+		done
+
+	cat $kbart | sed '/^[[:space:]]*$/d' > $fichier_output
+
+	lignes_kbart=$(wc -l < $fichier_output)
+
+	echo -e "\n\n"
+	echo $separateur
+	printf "Items dans le fichier KBART: %'d \n" $((lignes_kbart-1))
+	}
+
 if [ $# -eq 0 ]
 	then 
 		echo "Veuillez préciser le chemin du fichier à analyser. Ex. sh analyse_kbart.sh input/kbart_2021_06_08.txt"
@@ -20,31 +47,7 @@ buffer="./output/.buffer"
 
 separateur=$(printf -- '-%.0s' {1..60})
 
-############ Listes des inclusions et exclusions
-
-declare -a collections_a_exclure
-declare -a coverage_depth_a_inclure
-
-dos2unix -q $fichier_collections_a_exclure
-dos2unix -q $fichier_coverage_depth_a_inclure
-
-for i in $(cat $fichier_collections_a_exclure | sed '/^[[:space:]]*$/d')
-	do 
-		collections_a_exclure+=("$i")
-	done
-
-for i in $(cat $fichier_coverage_depth_a_inclure | sed '/^[[:space:]]*$/d')
-	do 
-		coverage_depth_a_inclure+=("$i")
-	done
-
-cat $kbart | sed '/^[[:space:]]*$/d' > $fichier_output
-
-lignes_kbart=$(wc -l < $fichier_output)
-
-echo -e "\n\n"
-echo $separateur
-printf "Items dans le fichier KBART: %'d \n" $((lignes_kbart-1))
+liste_inclusions_et_exclusions
 
 ############ Collections à exclure
 
