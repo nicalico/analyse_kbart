@@ -53,6 +53,30 @@ collections_a_exclure()
 	printf "\nItems conservés dans le fichier KBART: %'d \n" $((lignes_kbart_f-1))
 	}
 
+coverage_a_inclure() 
+	{
+	echo $separateur
+	echo "Filtrage du champ coverage_depth"
+
+	> $buffer
+	head -1 $fichier_output >> $buffer
+	n_buffer=1
+
+	for k in ${coverage_depth_a_inclure[@]}
+		do 
+			awk -v coverage_depth="$k" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ coverage_depth) print $0}' $fichier_output >> $buffer
+			n_output=$(wc -l < $buffer)
+			printf "\t$k inclus: %'d \n" $((n_output-n_buffer))
+			n_buffer=$(wc -l < $buffer)
+		done
+
+	printf "\nItems conservés dans le fichier KBART: %'d \n" $(($(wc -l < $buffer)-1))
+		
+	cat $buffer > $fichier_output
+
+	cat $fichier_output > ./output/output.avec.doublons.csv
+	}
+
 if [ $# -eq 0 ]
 	then 
 		echo "Veuillez préciser le chemin du fichier à analyser. Ex. sh analyse_kbart.sh input/kbart_2021_06_08.txt"
@@ -77,29 +101,7 @@ liste_inclusions_et_exclusions
 
 collections_a_exclure
 
-############ Coverage depth à inclure
-
-echo $separateur
-echo "Filtrage du champ coverage_depth"
-
-> $buffer
-head -1 $fichier_output >> $buffer
-n_buffer=1
-
-for k in ${coverage_depth_a_inclure[@]}
-	do 
-		awk -v coverage_depth="$k" 'BEGIN {FS="\t"; OFS=FS; IGNORECASE=1} {if ($14 ~ coverage_depth) print $0}' $fichier_output >> $buffer
-		n_output=$(wc -l < $buffer)
-		printf "\t$k inclus: %'d \n" $((n_output-n_buffer))
-		n_buffer=$(wc -l < $buffer)
-	done
-
-printf "\nItems conservés dans le fichier KBART: %'d \n" $(($(wc -l < $buffer)-1))
-	
-cat $buffer > $fichier_output
-
-
-cat $fichier_output > ./output/output.avec.doublons.csv
+coverage_a_inclure
 
 ############ Dédoublonnage
 
