@@ -16,4 +16,4 @@
 ### Exécution
 On invoque le script avec le nom du fichier kbart:
 
-`sh analyse_kbart.sh chemin_et_nom_du_fichier_kbart.txt`
+`sh analyse_kbart.sh input/fichier_kbart.txt`
